@@ -62,7 +62,7 @@ func main() {
 
 					destImg := imaging.Resize(img, maxSize, 0, imaging.Lanczos)
 
-					// @TODO: alskdalsk
+					// @TODO: add option to rename file
 					fmt.Println(path)
 
 					err := imaging.Save(destImg, path)
