@@ -1,6 +1,7 @@
 package main
 
 import (
+  "runtime"
 	"flag"
 	"fmt"
 
@@ -8,6 +9,8 @@ import (
 )
 
 func main() {
+  runtime.GOMAXPROCS(2)
+
 	directory := "."
 
 	flag.StringVar(&directory, "p", directory, "The path to walk in")
