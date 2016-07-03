@@ -14,23 +14,25 @@ import (
 	"github.com/lucasmezencio/image-resizer/util/array"
 )
 
-// Resizer
-func Resizer(directory string) {
-	filepath.Walk(directory, func(path string, fileInfo os.FileInfo, err error) error {
-		imageSize := fileInfo.Size()
-		twoMegabytes := int64(2e+6)
-		maxSize := 2000
-		allowedExtensions := []string{"jpg", "jpeg"}
+// DoResize into a directory
+func DoResize(directory string, size string, maxWidth string) {
+	fmt.Printf("Walking recursively through: %s\n\n", directory)
 
+	bytes := util.StrToBytes(size)
+
+	filepath.Walk(directory, func(path string, fileInfo os.FileInfo, err error) error {
+		imageSize := float64(fileInfo.Size())
+		allowedExtensions := []string{"jpg", "jpeg"}
 		fileExt := strings.ToLower(filepath.Ext(path))
+		width, _ := strconv.Atoi(maxWidth)
 
 		if path != "." && !fileInfo.IsDir() && !util.Empty(fileExt) {
 			fileExt = fileExt[1:len(fileExt)]
 
-			if imageSize >= twoMegabytes && (array.InArray(fileExt, allowedExtensions) != -1) {
+			if imageSize >= bytes && (array.InArray(fileExt, allowedExtensions) != -1) {
 				imageName := fileInfo.Name()
 
-				fmt.Printf("Image %s is larger than 2 MB (%d)\n", imageName, imageSize)
+				fmt.Printf("Image %s is larger than 2 MB (%f)\n", imageName, imageSize)
 
 				reader, err := os.Open(path)
 
@@ -46,16 +48,16 @@ func Resizer(directory string) {
 
 				bounds := img.Bounds()
 
-				if bounds.Max.X > maxSize {
-					X := strconv.Itoa(bounds.Max.X)
+				if bounds.Max.X > width {
+					imageWidth := strconv.Itoa(bounds.Max.X)
 
 					fmt.Printf("Image %s is wider than 2000px (%s)\n\n",
 						color.GreenString(imageName),
-						color.BlueString(X+"px"))
+						color.BlueString(imageWidth+"px"))
 
-					destImg := imaging.Resize(img, maxSize, 0, imaging.Lanczos)
+					destImg := imaging.Resize(img, width, 0, imaging.Lanczos)
 
-					// @TODO: add option to rename file
+					// @TODO: add flag to add a prefix to filename
 					fmt.Println(path)
 
 					err := imaging.Save(destImg, path)
