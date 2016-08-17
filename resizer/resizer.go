@@ -55,7 +55,8 @@ func DoResize(directory string, size string, maxWidth string) {
 						color.GreenString(imageName),
 						color.BlueString(imageWidth+"px"))
 
-					destImg := imaging.Resize(img, width, 0, imaging.Lanczos)
+					// @TODO: add flag to choose which filter to use
+					destImg := imaging.Resize(img, width, 0, imaging.Blackman)
 
 					// @TODO: add flag to add a prefix to filename
 					fmt.Println(path)
