@@ -35,6 +35,7 @@ func DoResize(directory string, size string, maxWidth string) {
 				fmt.Printf("Image %s is larger than 2 MB (%f)\n", imageName, imageSize)
 
 				reader, err := os.Open(path)
+				defer reader.Close()
 
 				if err != nil {
 					fmt.Println("Error opening", color.RedString(imageName))
@@ -67,8 +68,6 @@ func DoResize(directory string, size string, maxWidth string) {
 						panic(err)
 					}
 				}
-
-				defer reader.Close()
 			}
 		}
 
